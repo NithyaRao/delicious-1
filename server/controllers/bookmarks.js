@@ -8,13 +8,13 @@ const router = module.exports = express.Router();
 router.post('/', (req, res) => {
   const schema = {
     title: joi.string().required(),
-    url: joi.string(),
+    url: joi.string().uri().required(),
     description: joi.string(),
     isProtected: joi.boolean(),
     datePublished: joi.date().min('1995-01-01'),
     dateCreated: joi.date(),
-    stars: joi.number(),
-    tags: joi.array(),
+    stars: joi.number().min(1).max(5),
+    tags: joi.array().items(joi.string()).min(1),
   };
 
   const results = joi.validate(req.body, schema);
