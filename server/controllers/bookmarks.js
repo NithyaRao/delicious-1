@@ -11,7 +11,7 @@ router.post('/', (req, res) => {
     url: joi.string(),
     description: joi.string(),
     isProtected: joi.boolean(),
-    datePublished: joi.date(),
+    datePublished: joi.date().min('1995-01-01'),
     dateCreated: joi.date(),
     stars: joi.number(),
     tags: joi.array(),
