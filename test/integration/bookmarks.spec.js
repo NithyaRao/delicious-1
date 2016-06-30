@@ -38,7 +38,7 @@ describe('bookmarks', () => {
       .end((err, rsp) => {
         expect(err).to.be.null;
         expect(rsp.status).to.equal(400);
-        expect(rsp.body.message).to.equal('Title Missing');
+        expect(rsp.body.messages).to.deep.equal(['"title" is required']);
         done();
       });
     });
