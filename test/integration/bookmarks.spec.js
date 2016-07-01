@@ -3,12 +3,12 @@
 const expect = require('chai').expect;
 const request = require('supertest');
 const app = require('../../dst/server');
-const mongoose = require('mongoose');
+const cp = require('child_process');
 const Bookmark = require('../../dst/models/bookmark');
 
 describe('bookmarks', () => {
   beforeEach((done) => {
-    mongoose.connection.db.dropDatabase(() => {
+    cp.execFile(`${__dirname}/../scripts/populate.sh`, { cwd: `${__dirname}/../scripts` }, () => {
       done();
     });
   });
