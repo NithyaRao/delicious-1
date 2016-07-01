@@ -4,11 +4,50 @@ const expect = require('chai').expect;
 const request = require('supertest');
 const app = require('../../dst/server');
 const mongoose = require('mongoose');
+const Bookmark = require('../../dst/models/bookmark');
 
 describe('bookmarks', () => {
   beforeEach((done) => {
     mongoose.connection.db.dropDatabase(() => {
       done();
+    });
+  });
+
+  describe('delete /bookmarks/:id', () => {
+    it('should delete a bookmark', (done) => {
+      Bookmark.create({ title: 'a', description: 'b', url: 'c' }, (err1, bm) => {
+        const id = bm._id.toString();
+        request(app)
+        .delete(`/bookmarks/${id}`)
+        .end((err2, rsp) => {
+          expect(err2).to.be.null;
+          expect(rsp.status).to.equal(200);
+          expect(rsp.body.id).to.equal(id);
+          done();
+        });
+      });
+    });
+
+    it('should NOT delete a bookmark - does not exist', (done) => {
+      request(app)
+      .delete('/bookmarks/01234567890123456789abcd')
+      .end((err2, rsp) => {
+        expect(err2).to.be.null;
+        expect(rsp.status).to.equal(400);
+        expect(rsp.body.messages[0]).to.equal('id not found');
+        done();
+      });
+    });
+
+    it('should NOT delete a bookmark - bad id', (done) => {
+      request(app)
+      .delete('/bookmarks/wrong')
+      .end((err2, rsp) => {
+        expect(err2).to.be.null;
+        expect(rsp.status).to.equal(400);
+        expect(rsp.body.messages[0]).to.contain('"id" with value "wrong" fails to match the required pattern');
+        done();
+      });
     });
   });
 
