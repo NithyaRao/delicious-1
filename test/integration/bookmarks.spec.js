@@ -13,6 +13,44 @@ describe('bookmarks', () => {
     });
   });
 
+  describe('get /bookmarks', () => {
+    it('should get all the bookmarks', (done) => {
+      request(app)
+      .get('/bookmarks')
+      .end((err, rsp) => {
+        expect(err).to.be.null;
+        expect(rsp.status).to.equal(200);
+        expect(rsp.body.bookmarks).to.have.length(5);
+        done();
+      });
+    });
+
+    it('should filter bookmarks by title, stars and isProtected order by date page 2', (done) => {
+      request(app)
+      .get('/bookmarks?filter[title]=a1&filter[isProtected]=true&filter[stars]=3&sort[datePublished]=-1&page=2&limit=2')
+      .end((err, rsp) => {
+        expect(err).to.be.null;
+        expect(rsp.status).to.equal(200);
+        expect(rsp.body.bookmarks).to.have.length(1);
+        expect(rsp.body.bookmarks[0].datePublished).to.contain('2015-03-15');
+        done();
+      });
+    });
+  });
+
+  describe('get /bookmarks/:id', () => {
+    it('should get one bookmark', (done) => {
+      request(app)
+      .get('/bookmarks/012345678901234567890002')
+      .end((err, rsp) => {
+        expect(err).to.be.null;
+        expect(rsp.status).to.equal(200);
+        expect(rsp.body.bookmark._id).to.equal('012345678901234567890002');
+        done();
+      });
+    });
+  });
+
   describe('delete /bookmarks/:id', () => {
     it('should delete a bookmark', (done) => {
       Bookmark.create({ title: 'a', description: 'b', url: 'c' }, (err1, bm) => {
