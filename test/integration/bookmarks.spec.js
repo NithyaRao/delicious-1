@@ -13,6 +13,22 @@ describe('bookmarks', () => {
     });
   });
 
+  describe('put /bookmarks/:id', () => {
+    it('should create a bookmark', (done) => {
+      request(app)
+      .put('/bookmarks/012345678901234567890002')
+      .send({ title: 'z', url: 'http://apple.com', description: 'z1',
+              isProtected: false, datePublished: '2016-04-24',
+              stars: 4, tags: ['x', 'y'] })
+      .end((err, rsp) => {
+        expect(err).to.be.null;
+        expect(rsp.status).to.equal(200);
+        expect(rsp.body.bookmark.url).to.equal('http://apple.com');
+        done();
+      });
+    });
+  });
+
   describe('get /bookmarks', () => {
     it('should get all the bookmarks', (done) => {
       request(app)
